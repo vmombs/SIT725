@@ -1,32 +1,45 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 class PizzaService {
-  constructor(uri) {
+  constructor(uri, dbName = "myDB") { // Defaults to "myDB" if no name is provided
     this.uri = uri;
     this.client = new MongoClient(uri);
+    this.dbName = dbName;
   }
 
   async connect() {
     await this.client.connect();
+    this.db = this.client.db(this.dbName);
   }
 
   async insertPizza(pizza) {
-    const db = this.client.db("myDB");
-    const collection = db.collection("pizzaMenu");
+    const collection = this.db.collection("pizzaMenu");
     const result = await collection.insertOne(pizza);
     if (result.acknowledged) {
-        const insertedPizza = await collection.findOne({_id: result.insertedId});
-        return insertedPizza
+      return { insertedId: result.insertedId, ...pizza };
     } else {
-        throw new Error("Insertion failed")
+      throw new Error("Insertion failed");
     }
-}
+  }
 
   async fetchAllPizzas() {
-    const db = this.client.db("myDB");
-    const collection = db.collection("pizzaMenu");
-    const data = await collection.find().toArray();
-    return data;
+    const collection = this.db.collection("pizzaMenu");
+    return await collection.find().toArray();
+  }
+
+  async fetchPizzaById(id) {
+    const collection = this.db.collection("pizzaMenu");
+    try {
+      return await collection.findOne({ _id: new ObjectId(id) });
+    } catch (error) {
+      console.error("Error fetching pizza by ID:", error);
+      throw error;
+    }
+  }
+
+  async deletePizza(id) {
+    const collection = this.db.collection("pizzaMenu");
+    return await collection.deleteOne({ _id: new ObjectId(id) });
   }
 
   async close() {
