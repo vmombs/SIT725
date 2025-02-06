@@ -17,7 +17,11 @@ class PizzaController {
             });
 
             const savedPizza = await pizzaService.insertPizza(newPizza);
-            return savedPizza; // Return the saved pizza
+
+            // Accessing the actual pizza object:
+            const pizza = savedPizza._doc; // The actual pizza data is under the _doc property
+
+            return pizza; // Return the actual pizza
 
         } catch (err) {
             console.error('Error creating pizza:', err);

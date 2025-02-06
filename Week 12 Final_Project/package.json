@@ -1,0 +1,24 @@
+{
+  "name": "week-4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mongodb.js",
+  "scripts": {
+    "test": "npx mocha test/pizza_model.test.mjs test/pizza_service.test.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mongodb": "^6.13.0",
+    "mongoose": "^8.8.4",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "chai": "^5.1.2",
+    "mocha": "^11.0.1"
+  }
+}
